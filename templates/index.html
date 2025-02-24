@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+    </head>
+    <body>
+        <ul>
+            {% for item in items %}
+            <li>{{item.text}}
+                {% for name in item.names %}
+                <a href = "https://instagram.com/{{name}}">{{name}}</a>
+                {% endfor %}
+                <input type = "button" class = "delete_notif" value = "DELETE" onclick="delete_notif(this)">
+            </li>
+            {% endfor %}
+        </ul>
+    </body>
+    <script>    
+        function delete_notif(event) { 
+            parentText = event.parentElement.childNodes[0].textContent.trim();
+            console.log(parentText)
+            fetch("/delete_notif", {
+                method: 'POST', 
+                headers: {
+                    'Content-Type' : 'application/json'
+                },
+                body: JSON.stringify({text: parentText})
+            })
+            .then(data => {
+                console.log("Success: ", data)
+                window.location.href = window.location.href
+            })
+            .catch(error => console.error(error))    
+        }
+    </script>
+</html>
