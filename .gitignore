@@ -135,6 +135,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+Scripts/
 
 # Spyder project settings
 .spyderproject
@@ -169,3 +170,16 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Current Insta Cookies
+instagram_cookies.pkl
+
+# private key
+ig_manager.pem
+
+#screenshot files
+screenshots/button_clicked.png
+screenshots/final_screenshot.png
+screenshots/info_entered.png
+screenshots/login_complete.png
+screenshots/notifs_screenshot.png
