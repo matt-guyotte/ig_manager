@@ -136,6 +136,7 @@ ENV/
 env.bak/
 venv.bak/
 Scripts/
+pyvenv.cfg
 
 # Spyder project settings
 .spyderproject
@@ -178,8 +179,4 @@ instagram_cookies.pkl
 ig_manager.pem
 
 #screenshot files
-screenshots/button_clicked.png
-screenshots/final_screenshot.png
-screenshots/info_entered.png
-screenshots/login_complete.png
-screenshots/notifs_screenshot.png
+screenshots/*
