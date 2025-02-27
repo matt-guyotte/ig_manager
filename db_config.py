@@ -9,7 +9,7 @@ def db_config():
         "host": "localhost",
         "port": 5432,
         "database": "insta_notifications",
-        "user": "admin",
+        "user": os.getenv("DB_USER"),
         "password": os.getenv("DB_PASS")
     }
 

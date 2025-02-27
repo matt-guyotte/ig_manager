@@ -1,6 +1,4 @@
-import cv2
 import numpy as np
-import pyautogui
 import time
 import pytesseract
 import sys
@@ -44,9 +42,6 @@ def check_notifications():
 
     # Crop the image (adjust left, top, right, bottom as needed)
     cropped_screenshot = screenshot.crop((1050, 0, screenshot.width - 800, screenshot.height)) 
-
-    # Convert screenshot to OpenCV format
-    screenshot_cv = cv2.cvtColor(np.array(screenshot), cv2.COLOR_RGB2BGR)
 
     # Perform OCR with pytesseract
     ocr_data = pytesseract.image_to_data(cropped_screenshot, output_type=pytesseract.Output.DICT)

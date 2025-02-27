@@ -52,8 +52,8 @@ def get_screenshot():
         if "accounts/login" in driver.current_url:
             username = driver.find_element(By.NAME, "username")
             password = driver.find_element(By.NAME, "password")
-            username.send_keys(os.getenv("insta_user"))
-            password.send_keys(os.getenv("insta_pass"))
+            username.send_keys(os.getenv("INSTA_USER"))
+            password.send_keys(os.getenv("INSTA_PASS"))
             driver.save_screenshot("screenshots/info_entered.png")
 
             login_button = driver.find_element(By.XPATH, "//button[@type='submit']")
