@@ -35,6 +35,8 @@ chmod 600 .env
 
 echo ".env file created with db and insta credentials."
 
+cat .env
+
 # Load environment variables
 source .env
 
