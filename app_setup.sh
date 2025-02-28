@@ -35,12 +35,18 @@ chmod 600 .env
 
 echo ".env file created with db and insta credentials."
 
-cat .env
-
+#exporting variables to be used in database creation
 export DB_USER DB_PASS
 
 # Load environment variables
-source .env
+#source .env
+
+# Create the .pgpass file and set appropriate permissions
+PGPASS_FILE="$HOME/.pgpass"
+echo "localhost:5432:insta_notifications:$DB_USER:$DB_PASS" > $PGPASS_FILE
+chmod 0600 $PGPASS_FILE
+
+echo ".pgpass file created."
 
 # Update and install PostgreSQL
 echo "Updating system and installing PostgreSQL..."
@@ -55,6 +61,9 @@ sudo systemctl enable postgresql
 # Replace placeholders in init_db with .env values 
 echo "Configuring database with provided credentials..."
 envsubst < init_db.sql | sudo -u postgres psql
+
+# Creating notifications and deleted_notifications tables
+sudo -u $DB_USER psql -d insta_notifications -f create_tables.sql
 
 # Restart PostgreSQL to apply changes
 sudo systemctl restart postgresql
