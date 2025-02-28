@@ -6,7 +6,7 @@ load_dotenv()
 
 def db_config():
     db_configuration = {
-        "host": "localhost",
+        "host": os.getenv("DB_HOST", "localhost"),
         "port": 5432,
         "database": "insta_notifications",
         "user": os.getenv("DB_USER"),

@@ -21,13 +21,13 @@ echo "This database will be named 'insta_notifications'.
 
 
 cat <<EOF > .env
-DB_USER=$DB_USER
-DB_PASS=$DB_PASS
-DB_NAME=insta_notifications
-DB_HOST=localhost
-DB_PORT=5432
-INSTA_USER=$INSTA_USER
-INSTA_PASS=$INSTA_PASS
+DB_USER="$DB_USER"
+DB_PASS="$DB_PASS"
+DB_NAME="insta_notifications"
+DB_HOST="localhost"
+DB_PORT="5432"
+INSTA_USER="$INSTA_USER"
+INSTA_PASS="$INSTA_PASS"
 EOF
 
 #Setting read and write permission to owner only
@@ -41,13 +41,6 @@ export DB_USER DB_PASS
 # Load environment variables
 #source .env
 
-# Create the .pgpass file and set appropriate permissions
-PGPASS_FILE="$HOME/.pgpass"
-echo "localhost:5432:insta_notifications:$DB_USER:$DB_PASS" > $PGPASS_FILE
-chmod 0600 $PGPASS_FILE
-
-echo ".pgpass file created."
-
 # Update and install PostgreSQL
 echo "Updating system and installing PostgreSQL..."
 sudo apt update && sudo apt install -y postgresql postgresql-contrib
@@ -58,12 +51,19 @@ if ! systemctl is-active --quiet postgresql; then
 fi
 sudo systemctl enable postgresql
 
-# Replace placeholders in init_db with .env values 
+# Create the .pgpass file and set appropriate permissions
+PGPASS_FILE="$HOME/.pgpass"
+echo "localhost:5432:insta_notifications:$DB_USER:$DB_PASS" > $PGPASS_FILE
+chmod 0600 $PGPASS_FILE
+
+echo ".pgpass file created."
+
 echo "Configuring database with provided credentials..."
+# Replace placeholders in init_db with .env values 
 envsubst < init_db.sql | sudo -u postgres psql
 
 # Creating notifications and deleted_notifications tables
-sudo -u $DB_USER psql -d insta_notifications -f create_tables.sql
+PGPASS_FILE="$HOME/.pgpass" psql -h localhost -U admin -d insta_notifications -f create_tables.sql
 
 # Restart PostgreSQL to apply changes
 sudo systemctl restart postgresql
