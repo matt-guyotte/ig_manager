@@ -37,6 +37,8 @@ echo ".env file created with db and insta credentials."
 
 cat .env
 
+export DB_USER DB_PASS
+
 # Load environment variables
 source .env
 
