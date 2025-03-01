@@ -21,7 +21,7 @@ def get_screenshot():
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
 
-    service = Service(r"C:\WebDrivers\chromedriver.exe")
+    service = Service(os.getenv("CHROMEDRIVER_PATH"))
     print("Initializing WebDriver...")
     driver = webdriver.Chrome(service=service, options=chrome_options)
 

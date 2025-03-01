@@ -28,6 +28,7 @@ DB_HOST="localhost"
 DB_PORT="5432"
 INSTA_USER="$INSTA_USER"
 INSTA_PASS="$INSTA_PASS"
+CHROMEDRIVER_PATH="/usr/bin/chromedriver"
 EOF
 
 #Setting read and write permission to owner only
@@ -89,6 +90,32 @@ echo "Virtual environment now created. Now installing necessary dependencies."
 
 #Installing python dependencies
 pip install -r requirements.txt
+
+#install wget and unzip if not available
+sudo apt install -y wget
+sudo apt install -y unzip
+
+#setting up chrome for selenium
+if ! command -v google-chrome-stable &> /dev/null
+then
+    echo "Google Chrome not found. Executing your task..."
+    # Put the command you want to execute here
+    # For example:
+    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+    sudo dpkg -i google-chrome-stable_current_amd64.deb
+    sudo apt-get install -f
+else
+    echo "Google Chrome is already installed."
+fi
+
+#installing chromedriver based on current version
+CHROME_VERSION=$(google-chrome-stable --version)
+wget https://chromedriver.storage.googleapis.com/$CHROME_VERSION/chromedriver_linux64.zip
+
+#extracting zip file and moving to bin
+unzip chromedriver_linux64.zip
+sudo mv chromedriver /usr/local/bin/
+sudo chmod +x /usr/local/bin/chromedriver
 
 echo "App setup complete. It's up to you if you would like to use a 
     reverse proxy or call the flask app directly using 'python3 main.py'

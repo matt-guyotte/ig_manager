@@ -11,7 +11,7 @@ GRANT ALL PRIVILEGES ON DATABASE insta_notifications TO ${DB_USER};
 GRANT CREATE, USAGE ON SCHEMA public TO ${DB_USER};
 
 -- Allow admin to manage tables they create
-ALTER ROLE admin WITH CREATEDB;
+ALTER ROLE ${DB_USER} WITH CREATEDB;
 
 -- Make admin database owner
-ALTER DATABASE insta_notifications OWNER TO admin;
+ALTER DATABASE insta_notifications OWNER TO ${DB_USER};
