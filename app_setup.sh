@@ -63,7 +63,7 @@ echo "Configuring database with provided credentials..."
 envsubst < init_db.sql | sudo -u postgres psql
 
 # Creating notifications and deleted_notifications tables
-PGPASS_FILE="$HOME/.pgpass" psql -h localhost -U admin -d insta_notifications -f create_tables.sql
+PGPASS_FILE="$HOME/.pgpass" psql -h localhost -U $DB_USER -d insta_notifications -f create_tables.sql
 
 # Restart PostgreSQL to apply changes
 sudo systemctl restart postgresql
