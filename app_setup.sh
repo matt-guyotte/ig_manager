@@ -28,7 +28,8 @@ DB_HOST="localhost"
 DB_PORT="5432"
 INSTA_USER="$INSTA_USER"
 INSTA_PASS="$INSTA_PASS"
-CHROMEDRIVER_PATH="/usr/bin/chromedriver"
+CHROMEDRIVER_PATH="/usr/local/bin/chromedriver"
+CHROME_BINARY_PATH = "/usr/bin/google-chrome"
 EOF
 
 #Setting read and write permission to owner only
@@ -122,6 +123,7 @@ sudo rm -rf chromedriver-linux64
 sudo rm chromedriver-linux64.zip
 sudo rm google-chrome-stable_current_amd64.deb
 
-echo "App setup complete. It's up to you if you would like to use a 
-    reverse proxy or call the flask app directly using 'python3 main.py'
-    at this point."
+echo "App setup complete. You will need to cd in and out of the directory to see
+    the venv. Once back in use the "source venv/bin/activate" command to start the venv.
+    It's up to you if you would like to use a reverse proxy or call the flask app directly 
+    using 'python3 main.py' at this point."

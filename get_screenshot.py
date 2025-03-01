@@ -14,7 +14,7 @@ def get_screenshot():
     print("function ran")
     cookie_file = "instagram_cookies.pkl"
     chrome_options = Options()
-    chrome_options.binary_location = r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"
+    chrome_options.binary_location = os.getenv("CHROME_BINARY_PATH")
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--window-size=1920,1080")  # Set window size
     chrome_options.add_argument("--disable-gpu")  # Disable GPU (sometimes needed for headless mode)
