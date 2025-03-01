@@ -114,7 +114,7 @@ wget https://storage.googleapis.com/chrome-for-testing-public/$CHROME_VERSION/li
 
 #extracting zip file and moving to bin
 unzip chromedriver-linux64.zip
-sudo mv chromedriver /usr/local/bin/
+sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
 sudo chmod +x /usr/local/bin/chromedriver
 
 echo "App setup complete. It's up to you if you would like to use a 
