@@ -109,7 +109,7 @@ else
 fi
 
 #installing chromedriver based on current version
-CHROME_VERSION=$(google-chrome-stable --version)
+CHROME_VERSION=$(google-chrome-stable --version | awk '{print $3}')
 wget https://chromedriver.storage.googleapis.com/$CHROME_VERSION/chromedriver_linux64.zip
 
 #extracting zip file and moving to bin
