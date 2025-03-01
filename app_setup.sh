@@ -117,6 +117,11 @@ unzip chromedriver-linux64.zip
 sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
 sudo chmod +x /usr/local/bin/chromedriver
 
+#remove excess chrome and chromedriver files
+sudo rm -rf chromedriver-linux64
+sudo rm chromedriver-linux64.zip
+sudo rm google-chrome-stable_current_amd64.deb
+
 echo "App setup complete. It's up to you if you would like to use a 
     reverse proxy or call the flask app directly using 'python3 main.py'
     at this point."
