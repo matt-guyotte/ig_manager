@@ -110,10 +110,10 @@ fi
 
 #installing chromedriver based on current version
 CHROME_VERSION=$(google-chrome-stable --version | awk '{print $3}')
-wget https://chromedriver.storage.googleapis.com/$CHROME_VERSION/chromedriver_linux64.zip
+wget https://storage.googleapis.com/chrome-for-testing-public/$CHROME_VERSION/linux64/chromedriver-linux64.zip
 
 #extracting zip file and moving to bin
-unzip chromedriver_linux64.zip
+unzip chromedriver-linux64.zip
 sudo mv chromedriver /usr/local/bin/
 sudo chmod +x /usr/local/bin/chromedriver
 
