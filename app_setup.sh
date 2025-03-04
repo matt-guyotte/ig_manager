@@ -95,7 +95,7 @@ source venv/bin/activate
 echo "Virtual environment now created. Now installing necessary dependencies."
 
 #Installing python dependencies
-sudo pip install -r requirements.txt
+pip install -r requirements.txt
 
 #install wget and unzip if not available
 sudo apt install -y wget
