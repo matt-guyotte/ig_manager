@@ -15,6 +15,7 @@ def db_config():
 
     try: 
         connection = psycopg2.connect(**db_configuration)
+        print("connection established.")
         return connection
     except Exception as e:
         print("Exception found: ", e)

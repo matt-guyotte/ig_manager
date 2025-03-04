@@ -1,10 +1,11 @@
-import numpy as np
-import time
+import os
 import pytesseract
 import sys
 import re  # Import regex for better filtering
 from collections import defaultdict
 from PIL import Image
+from dotenv import load_dotenv
+load_dotenv()
 
 from db_config import db_config
 from notifsTest import extract_usernames
@@ -15,7 +16,7 @@ from get_screenshot import get_screenshot
 sys.stdout.reconfigure(encoding="utf-8")
 
 # Set Tesseract path (update if needed)
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = os.getenv("PYTESSERACT_PATH")
 
 # UI words to filter out
 UI_FILTER_WORDS = [
@@ -41,7 +42,7 @@ def check_notifications():
     screenshot = Image.open(screenshot_url)
 
     # Crop the image (adjust left, top, right, bottom as needed)
-    cropped_screenshot = screenshot.crop((1050, 0, screenshot.width - 800, screenshot.height)) 
+    cropped_screenshot = screenshot.crop((900, 0, screenshot.width - 600, screenshot.height)) 
 
     # Perform OCR with pytesseract
     ocr_data = pytesseract.image_to_data(cropped_screenshot, output_type=pytesseract.Output.DICT)
@@ -56,8 +57,8 @@ def check_notifications():
     connection = db_config()
     
     # Group detected words by their line number
-    for i, text in enumerate(ocr_data["text"]):
-        text = text.strip()
+    for i, ocr_text in enumerate(ocr_data["text"]):
+        text = ocr_text.strip()
 
         # Skip unwanted UI elements and garbage text at the beginning
         if not text or contains_ui_words(text) or not re.search(r'[a-zA-Z0-9]', text):  
@@ -130,6 +131,7 @@ def check_notifications():
 
     for notification in notifications:
         n = notification["text"].strip()
+        print(n)
 
         # Apply UI filtering again at full notification level
         if not n or contains_ui_words(n) or n.lower() == "follow":  

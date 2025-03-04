@@ -30,6 +30,7 @@ INSTA_USER="$INSTA_USER"
 INSTA_PASS="$INSTA_PASS"
 CHROMEDRIVER_PATH="/usr/local/bin/chromedriver"
 CHROME_BINARY_PATH = "/usr/bin/google-chrome"
+PYTESSERACT_PATH = "/usr/bin/tesseract"
 EOF
 
 #Setting read and write permission to owner only
@@ -43,9 +44,9 @@ export DB_USER DB_PASS
 # Load environment variables
 #source .env
 
-# Update and install PostgreSQL
+# Update and install PostgreSQL, psycopg2 adapter
 echo "Updating system and installing PostgreSQL..."
-sudo apt update && sudo apt install -y postgresql postgresql-contrib
+sudo apt update && sudo apt install -y postgresql postgresql-contrib libpq-dev
 
 # Start and enable PostgreSQL
 if ! systemctl is-active --quiet postgresql; then
@@ -81,6 +82,10 @@ echo "Now creating python virtual environment (venv)."
 # Installing python, pip, and venv if not available.
 sudo apt install -y python3 python3-pip python3-venv
 
+# Install Pytesseract if not available.
+sudo apt install -y tesseract-ocr
+sudo apt install -y libtesseract-dev
+
 #Creating virtual environment 
 python3 -m venv venv
 
@@ -90,7 +95,7 @@ source venv/bin/activate
 echo "Virtual environment now created. Now installing necessary dependencies."
 
 #Installing python dependencies
-pip install -r requirements.txt
+sudo pip install -r requirements.txt
 
 #install wget and unzip if not available
 sudo apt install -y wget
