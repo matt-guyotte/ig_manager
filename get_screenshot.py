@@ -13,6 +13,15 @@ import time
 def get_screenshot():
     print("function ran")
     cookie_file = "instagram_cookies.pkl"
+    # Unique user data dir based on time and PID
+    user_data_dir = f"/home/ubuntu/chrome-user-data-{int(time.time())}-{os.getpid()}"
+
+    # Cleanup any existing directories (if any) before proceeding
+    if os.path.exists(user_data_dir):
+        print(f"Cleaning up existing user data directory: {user_data_dir}")
+        # Remove any existing directory
+        os.system(f"rm -rf {user_data_dir}")
+
     chrome_options = Options()
     chrome_options.binary_location = os.getenv("CHROME_BINARY_PATH")
     chrome_options.add_argument("--headless")
@@ -20,6 +29,7 @@ def get_screenshot():
     chrome_options.add_argument("--disable-gpu")  # Disable GPU (sometimes needed for headless mode)
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument(f"--user-data-dir={user_data_dir}")
 
     service = Service(os.getenv("CHROMEDRIVER_PATH"))
     print("Initializing WebDriver...")

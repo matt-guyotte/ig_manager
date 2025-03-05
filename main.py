@@ -6,6 +6,7 @@ from db_config import db_config
 from add_to_db import add_to_db
 from get_notifs import get_notifs
 from delete_notif import delete_notif
+from clear_deleted_notifs import clear_deleted_notifs
 
 @app.route("/")
 def home():
@@ -21,6 +22,13 @@ def delete_notification():
     app.logger.info(data)
     delete_notif(connection, data.get("text"))
     return "0"
+
+@app.route("/clear_deleted_notifs")
+def clear_deleted_notifs():
+    connection = db_config()
+    clear_deleted_notifs(connection)
+    return "0"
+
 
 @app.route("/main")
 def main():

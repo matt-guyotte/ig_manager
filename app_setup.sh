@@ -15,6 +15,7 @@ read -p "Enter your database username: " DB_USER
 echo
 read -sp "Enter your database password: " DB_PASS
 echo
+read -p "Enter your app url without https:// : " APP_URL
 echo "This database will be named 'insta_notifications'.
     Please save your username and password if you need to 
     log in to the psql server."
@@ -127,6 +128,18 @@ sudo chmod +x /usr/local/bin/chromedriver
 sudo rm -rf chromedriver-linux64
 sudo rm chromedriver-linux64.zip
 sudo rm google-chrome-stable_current_amd64.deb
+
+#setup cron jobs
+CRON_JOB_1="*/30 * * * * curl http:/$APP_URL/main >> /home/ubuntu/cron.log 2>&1"
+CRON_JOB_2="0 0 * * 0 curl http://$APP_URL/clear_deleted_notifs >> /home/ubuntu/another-cron.log 2>&1"
+
+# Check if the cron jobs already exist to avoid duplicates
+(crontab -l | grep -F "$CRON_JOB_1") || echo "$CRON_JOB_1" | crontab -
+(crontab -l | grep -F "$CRON_JOB_2") || echo "$CRON_JOB_2" | crontab -
+
+# Print out the current cron jobs to confirm
+echo "Current cron jobs:"
+crontab -l
 
 echo "App setup complete. You will need to cd in and out of the directory to see
     the venv. Once back in use the "source venv/bin/activate" command to start the venv.
