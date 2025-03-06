@@ -54,6 +54,8 @@ def get_screenshot():
             print(e)
         if save_button:
             save_button.click()
+        driver.get("https://instagram.com/notifications")
+        time.sleep(10)
         #this is ran upon redirect back to login
         if 'notifications' not in driver.current_url:
             os.remove(cookie_file)
