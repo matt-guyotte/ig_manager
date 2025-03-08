@@ -28,46 +28,43 @@ def get_screenshot():
 
     driver.get("https://instagram.com/accounts/login")
     time.sleep(10)
-    
-    if os.path.exists(cookie_file):
-        cookies = pickle.load(open(cookie_file, "rb"))
-        for cookie in cookies:
-            driver.add_cookie(cookie)
-        
-        driver.get("https://instagram.com/notifications")
-        time.sleep(10)
-        
-        #this is ran upon redirect back to login
-        if 'notifications' not in driver.current_url:
-            os.remove(cookie_file)
-            return get_screenshot()
-    else: 
-        if "accounts/login" in driver.current_url:
-            username = driver.find_element(By.NAME, "username")
-            password = driver.find_element(By.NAME, "password")
-            username.send_keys(os.getenv("INSTA_USER"))
-            password.send_keys(os.getenv("INSTA_PASS"))
-            driver.save_screenshot("screenshots/info_entered.png")
+    while True: 
+        if os.path.exists(cookie_file):
+            cookies = pickle.load(open(cookie_file, "rb"))
+            for cookie in cookies:
+                driver.add_cookie(cookie)
 
-            login_button = driver.find_element(By.XPATH, "//button[@type='submit']")
-            login_button.click()
-            driver.save_screenshot("screenshots/button_clicked.png")
+            driver.get("https://instagram.com/notifications")
             time.sleep(10)
-            driver.save_screenshot("screenshots/login_complete.png")
-            #If instagram asks to save login information
-            save_button = None
-            try:
-                save_button = driver.find_element(By.XPATH, "//button[contains(text(), \"Save\")]")
-            except Exception as e:
-                print(e)
-            if save_button:
-                save_button.click()
-                pickle.dump(driver.get_cookies(), open(cookie_file, "wb"))
-                print("cookies saved.")
-                return get_screenshot()
 
-    print("taking screenshot...")
-    driver.save_screenshot("screenshots/notifs_screenshot.png")
+            #this is ran upon redirect back to login
+            if 'notifications' in driver.current_url:
+                print("taking screenshot...")
+                driver.save_screenshot("screenshots/notifs_screenshot.png")
+                break 
+            else:
+                os.remove(cookie_file)         
+        else: 
+            if "accounts/login" in driver.current_url:
+                username = driver.find_element(By.NAME, "username")
+                password = driver.find_element(By.NAME, "password")
+                username.send_keys(os.getenv("INSTA_USER"))
+                password.send_keys(os.getenv("INSTA_PASS"))
+                driver.save_screenshot("screenshots/info_entered.png")
+
+                login_button = driver.find_element(By.XPATH, "//button[@type='submit']")
+                login_button.click()
+                driver.save_screenshot("screenshots/button_clicked.png")
+                time.sleep(10)
+                driver.save_screenshot("screenshots/login_complete.png")
+                #If instagram asks to save login information
+                try:
+                    save_button = driver.find_element(By.XPATH, "//button[contains(text(), \"Save\")]")
+                    save_button.click()
+                    pickle.dump(driver.get_cookies(), open(cookie_file, "wb"))
+                    print("cookies saved.")
+                except Exception as e:
+                    print(e)
 
     driver.quit()
     return "screenshots/notifs_screenshot.png"
