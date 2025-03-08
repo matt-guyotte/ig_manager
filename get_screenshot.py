@@ -37,14 +37,6 @@ def get_screenshot():
         driver.get("https://instagram.com/notifications")
         time.sleep(10)
         
-        #If instagram asks to save login information
-        save_button = None
-        try:
-            save_button = driver.find_element(By.XPATH, "//button[contains(text()='Save')]")
-        except Exception as e:
-            print(e)
-        if save_button:
-            save_button.click()
         #this is ran upon redirect back to login
         if 'notifications' not in driver.current_url:
             os.remove(cookie_file)
@@ -62,9 +54,17 @@ def get_screenshot():
             driver.save_screenshot("screenshots/button_clicked.png")
             time.sleep(10)
             driver.save_screenshot("screenshots/login_complete.png")
-            pickle.dump(driver.get_cookies(), open(cookie_file, "wb"))
-            print("cookies saved.")
-            return get_screenshot()
+            #If instagram asks to save login information
+            save_button = None
+            try:
+                save_button = driver.find_element(By.XPATH, "//button[contains(text()='Save')]")
+            except Exception as e:
+                print(e)
+            if save_button:
+                save_button.click()
+                pickle.dump(driver.get_cookies(), open(cookie_file, "wb"))
+                print("cookies saved.")
+                return get_screenshot()
 
     print("taking screenshot...")
     driver.save_screenshot("screenshots/notifs_screenshot.png")
