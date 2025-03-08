@@ -171,8 +171,7 @@ sudo systemctl start gunicorn
 #install nginx if not already configured
 sudo apt install -y nginx
 
-#configure nginx to add site
-sudo nano /etc/nginx/sites-available/ig_manager
+#configure nginx to add site     
 cat << EOF | sudo tee /etc/nginx/sites-available/ig_manager
 server {
     listen 80;

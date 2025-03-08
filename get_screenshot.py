@@ -57,7 +57,7 @@ def get_screenshot():
             #If instagram asks to save login information
             save_button = None
             try:
-                save_button = driver.find_element(By.XPATH, "//button[contains(text()='Save')]")
+                save_button = driver.find_element(By.XPATH, "//button[contains(text(), \"Save\")]")
             except Exception as e:
                 print(e)
             if save_button:
