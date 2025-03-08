@@ -13,14 +13,6 @@ import time
 def get_screenshot():
     print("function ran")
     cookie_file = "instagram_cookies.pkl"
-    # Unique user data dir based on time and PID
-    user_data_dir = f"/home/ubuntu/chrome-user-data-{int(time.time())}-{os.getpid()}"
-
-    # Cleanup any existing directories (if any) before proceeding
-    if os.path.exists(user_data_dir):
-        print(f"Cleaning up existing user data directory: {user_data_dir}")
-        # Remove any existing directory
-        os.system(f"rm -rf {user_data_dir}")
 
     chrome_options = Options()
     chrome_options.binary_location = os.getenv("CHROME_BINARY_PATH")
@@ -29,7 +21,6 @@ def get_screenshot():
     chrome_options.add_argument("--disable-gpu")  # Disable GPU (sometimes needed for headless mode)
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
-    chrome_options.add_argument(f"--user-data-dir={user_data_dir}")
 
     service = Service(os.getenv("CHROMEDRIVER_PATH"))
     print("Initializing WebDriver...")
@@ -49,13 +40,11 @@ def get_screenshot():
         #If instagram asks to save login information
         save_button = None
         try:
-            save_button = driver.find_element(By.XPATH, "//button[contains(text()='Save'])")
+            save_button = driver.find_element(By.XPATH, "//button[contains(text()='Save')]")
         except Exception as e:
             print(e)
         if save_button:
             save_button.click()
-        driver.get("https://instagram.com/notifications")
-        time.sleep(10)
         #this is ran upon redirect back to login
         if 'notifications' not in driver.current_url:
             os.remove(cookie_file)

@@ -15,6 +15,8 @@ read -p "Enter your database username: " DB_USER
 echo
 read -sp "Enter your database password: " DB_PASS
 echo
+read -p "Enter your ubuntu username (might just be unbuntu): " UBUNTU_USER
+echo
 read -p "Enter your app url without https:// : " APP_URL
 echo "This database will be named 'insta_notifications'.
     Please save your username and password if you need to 
@@ -128,6 +130,71 @@ sudo chmod +x /usr/local/bin/chromedriver
 sudo rm -rf chromedriver-linux64
 sudo rm chromedriver-linux64.zip
 sudo rm google-chrome-stable_current_amd64.deb
+
+# Create the gunicorn.service file
+echo "Creating Gunicorn systemd service at $SERVICE_FILE..."
+
+# Path to systemd service file
+SERVICE_FILE="/etc/systemd/system/gunicorn.service"
+
+cat <<EOF | sudo tee $SERVICE_FILE > /dev/null
+[Unit]
+Description=gunicorn daemon for ig_manager
+After=network.target
+
+[Service]
+User=$UBUNTU_USER
+Group=ubuntu
+WorkingDirectory=/home/$UBUNTU_USER/ig_manager
+ExecStart=/home/$UBUNTU_USER/ig_manager/venv/bin/gunicorn --workers 3 --bind unix:/tmp/ig_manager.sock main:app
+Restart=always
+KillMode=process
+TimeoutSec=30
+Environment="PATH=/home/$UBUNTU_USER/ig_manager/venv/bin"
+Environment="VIRTUAL_ENV=/home/$UBUNTU_USER/ig_manager/venv"
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+echo "Gunicorn service file created successfully at $SERVICE_FILE"
+
+# Reload systemd to pick up the new service
+echo "Reloading systemd..."
+sudo systemctl daemon-reload
+
+# Enable and start the service
+echo "Starting Gunicorn service..."
+sudo systemctl enable gunicorn
+sudo systemctl start gunicorn
+
+# Check the status of the service
+echo "Checking Gunicorn service status..."
+sudo systemctl status gunicorn
+
+#install nginx if not already configured
+sudo apt install -y nginx
+
+#configure nginx to add site
+sudo nano /etc/nginx/sites-available/ig_manager
+cat << EOF | sudo tee /etc/nginx/sites-available/ig_manager
+server {
+    listen 80;
+    server_name $APP_URL;
+
+    location / {
+        proxy_pass http://unix:/tmp/ig_manager.sock;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+EOF
+
+sudo ln -s /etc/nginx/sites-available/ig_manager /etc/nginx/sites-enabled
+
+echo "nginx file created and linked."
 
 #setup cron jobs
 CRON_JOB_1="*/30 * * * * curl http:/$APP_URL/main >> /home/ubuntu/cron.log 2>&1"
