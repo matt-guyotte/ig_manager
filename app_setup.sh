@@ -168,10 +168,6 @@ echo "Starting Gunicorn service..."
 sudo systemctl enable gunicorn
 sudo systemctl start gunicorn
 
-# Check the status of the service
-echo "Checking Gunicorn service status..."
-sudo systemctl status gunicorn
-
 #install nginx if not already configured
 sudo apt install -y nginx
 
