@@ -3,6 +3,8 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -27,16 +29,25 @@ def get_screenshot():
     driver = webdriver.Chrome(service=service, options=chrome_options)
 
     driver.get("https://instagram.com/accounts/login")
-    time.sleep(10)
+    WebDriverWait(driver, 20).until(
+        EC.presence_of_element_located((By.CSS_SELECTOR, "main[role='main']"))
+    )
     while True: 
         if os.path.exists(cookie_file):
             cookies = pickle.load(open(cookie_file, "rb"))
             for cookie in cookies:
                 driver.add_cookie(cookie)
-
-            driver.get("https://instagram.com/notifications")
-            time.sleep(10)
-
+            try:
+                driver.get("https://instagram.com/notifications")
+                WebDriverWait(driver, 20).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, "div[role='heading']"))
+                )
+                print("taking screenshot...")
+                driver.save_screenshot("screenshots/notifs_screenshot.png")
+                break 
+            except Exception as e:
+                continue
+            
             #this is ran upon redirect back to login
             if 'notifications' in driver.current_url:
                 print("taking screenshot...")
@@ -55,16 +66,21 @@ def get_screenshot():
                 login_button = driver.find_element(By.XPATH, "//button[@type='submit']")
                 login_button.click()
                 driver.save_screenshot("screenshots/button_clicked.png")
-                time.sleep(10)
-                driver.save_screenshot("screenshots/login_complete.png")
                 #If instagram asks to save login information
                 try:
+                    save_button = WebDriverWait(driver, 15).until(
+                        EC.presence_of_element_located((By.XPATH, "//button[contains(text(), 'Save')]"))
+                    )
+                    driver.save_screenshot("screenshots/login_complete.png")
                     save_button = driver.find_element(By.XPATH, "//button[contains(text(), \"Save\")]")
                     save_button.click()
-                    pickle.dump(driver.get_cookies(), open(cookie_file, "wb"))
-                    print("cookies saved.")
+                    time.sleep(8)
+                    driver.save_screenshot("screenshots/login_info_saved.png")
                 except Exception as e:
+                    driver.save_screenshot("screenshots/login_complete.png")
                     print(e)
+                pickle.dump(driver.get_cookies(), open(cookie_file, "wb"))
+                print("cookies saved.")
 
     driver.quit()
     return "screenshots/notifs_screenshot.png"
