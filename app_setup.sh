@@ -199,8 +199,8 @@ sudo ln -s /etc/nginx/sites-available/ig_manager /etc/nginx/sites-enabled
 echo "nginx file created and linked."
 
 #setup cron jobs
-CRON_JOB_1="*/30 * * * * curl http:/$APP_URL/main >> /home/ubuntu/cron.log 2>&1"
-CRON_JOB_2="0 0 * * 0 curl http://$APP_URL/clear_deleted_notifs >> /home/ubuntu/another-cron.log 2>&1"
+CRON_JOB_1="*/30 * * * * curl http:/$APP_URL/main >> /home/$UBUNTU_USER/cron.log 2>&1"
+CRON_JOB_2="0 0 * * 0 curl http://$APP_URL/clear_deleted_notifs >> /home/$UBUNTU_USER/another-cron.log 2>&1"
 
 # Check if the cron jobs already exist to avoid duplicates
 (crontab -l | grep -F "$CRON_JOB_1") || echo "$CRON_JOB_1" | crontab -
