@@ -134,6 +134,9 @@ sudo rm google-chrome-stable_current_amd64.deb
 # Create the gunicorn.service file
 echo "Creating Gunicorn systemd service at $SERVICE_FILE..."
 
+# add www-data role to current user
+sudo usermod -aG www-data $UBUNTU_USER
+
 # Path to systemd service file
 SERVICE_FILE="/etc/systemd/system/gunicorn.service"
 
@@ -144,7 +147,7 @@ After=network.target
 
 [Service]
 User=$UBUNTU_USER
-Group=ubuntu
+Group=www-data
 WorkingDirectory=/home/$UBUNTU_USER/ig_manager
 ExecStart=/home/$UBUNTU_USER/ig_manager/venv/bin/gunicorn --workers 3 --bind unix:/tmp/ig_manager.sock main:app
 Restart=always
@@ -165,8 +168,12 @@ sudo systemctl daemon-reload
 
 # Enable and start the service
 echo "Starting Gunicorn service..."
+sudo systemctl daemon-reload
 sudo systemctl enable gunicorn
 sudo systemctl start gunicorn
+
+# set permissions for socket
+sudo chmod 660 /tmp/ig_manager.sock
 
 #install nginx if not already configured
 sudo apt install -y nginx
