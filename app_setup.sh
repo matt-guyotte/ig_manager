@@ -137,6 +137,10 @@ echo "Creating Gunicorn systemd service at $SERVICE_FILE..."
 # add www-data role to current user
 sudo usermod -aG www-data $UBUNTU_USER
 
+# double check permissions for dir
+sudo chown -R $UBUNTU_USER:www-data /home/$UBUNTU_USER/ig_manager
+sudo chmod -R 750 /home/$UBUNTU_USER/ig_manager
+
 # Path to systemd service file
 SERVICE_FILE="/etc/systemd/system/gunicorn.service"
 
@@ -190,6 +194,14 @@ server {
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto \$scheme;
+    }
+
+    location @flask {
+        proxy_pass http://unix:/tmp/ig_manager.sock;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
 EOF
