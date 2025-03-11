@@ -196,17 +196,13 @@ server {
         proxy_set_header X-Forwarded-Proto \$scheme;
     }
 
-    location @flask {
-        proxy_pass http://unix:/tmp/ig_manager.sock;
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
-    }
 }
 EOF
 
 sudo ln -s /etc/nginx/sites-available/ig_manager /etc/nginx/sites-enabled
+
+sudo systemctl start nginx
+sudo systemctl enable nginx
 
 echo "nginx file created and linked."
 
