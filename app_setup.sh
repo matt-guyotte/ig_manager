@@ -124,12 +124,19 @@ wget https://storage.googleapis.com/chrome-for-testing-public/$CHROME_VERSION/li
 #extracting zip file and moving to bin
 unzip chromedriver-linux64.zip
 sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
-sudo chmod +x /usr/local/bin/chromedriver
 
 #remove excess chrome and chromedriver files
 sudo rm -rf chromedriver-linux64
 sudo rm chromedriver-linux64.zip
 sudo rm google-chrome-stable_current_amd64.deb
+
+#set chrome to be executable and set permissions
+sudo chmod +x /usr/bin/google-chrome
+sudo chmod +x /usr/local/bin/chromedriver
+sudo chown $UBUNTU_USER:www-data /usr/bin/google-chrome
+sudo chmod 770 /usr/bin/google-chrome
+sudo chown $UBUNTU_USER:www-data /usr/local/bin/chromedriver
+sudo chmod 770 /usr/local/bin/chromedriver
 
 # Create the gunicorn.service file
 echo "Creating Gunicorn systemd service at $SERVICE_FILE..."
@@ -153,12 +160,14 @@ After=network.target
 User=$UBUNTU_USER
 Group=www-data
 WorkingDirectory=/home/$UBUNTU_USER/ig_manager
-ExecStart=/home/$UBUNTU_USER/ig_manager/venv/bin/gunicorn --workers 3 --bind unix:/tmp/ig_manager.sock main:app
+ExecStart=/home/$UBUNTU_USER/ig_manager/venv/bin/gunicorn --workers 3 --bind unix:/tmp/ig_manager.sock --umask 007 main:app
 Restart=always
 KillMode=process
 TimeoutSec=30
 Environment="PATH=/home/$UBUNTU_USER/ig_manager/venv/bin"
 Environment="VIRTUAL_ENV=/home/$UBUNTU_USER/ig_manager/venv"
+Environment="CHROMEDRIVER_PATH=/usr/local/bin/chromedriver"
+Environment="CHROME_BINARY_PATH=/usr/bin/google-chrome"
 
 [Install]
 WantedBy=multi-user.target
@@ -176,8 +185,12 @@ sudo systemctl daemon-reload
 sudo systemctl enable gunicorn
 sudo systemctl start gunicorn
 
-# set permissions for socket
-sudo chmod 660 /tmp/ig_manager.sock
+# set permissions for socket and tmp dir
+sudo chown $UBUNTU_USER:www-data /tmp/ig_manager.sock
+sudo chmod 770 /tmp/ig_manager.sock
+sudo chown $UBUNTU_USER:www-data /tmp
+sudo chmod 770 /tmp
+
 
 #install nginx if not already configured
 sudo apt install -y nginx
