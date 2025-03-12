@@ -22,10 +22,10 @@ pytesseract.pytesseract.tesseract_cmd = os.getenv("PYTESSERACT_PATH")
 UI_FILTER_WORDS = [
     "Instagram", "Home", "Search", "Explore", "Reels", "Messages",
     "Threads", "Profile", "Dashboard", "Create", "Notifications",
-    "%", "@", "All Bookmarks", "Today", "instagram.com/notifications", 
+    "%", "@", "All Bookmarks", "Today", "New", "instagram.com/notifications", 
     "More", "Ce]", "oo AI Studio", "®", "Justagram", 
     "Justagram, (A Q ® explore", "© messages oo Al Studio", 
-    "This week", "Yesterday", "Follow"
+    "This week", "This month", "Yesterday", "Follow", "Commented", "ay"
 ]
 
 # Function to check if text contains unwanted UI elements

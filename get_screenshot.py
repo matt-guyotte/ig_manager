@@ -23,7 +23,7 @@ def get_screenshot():
     chrome_options.add_argument("--disable-gpu")  # Disable GPU (sometimes needed for headless mode)
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
-    chrome_options.add_argument(f"--user-data-dir=/tmp/chrome_user_data_{os.getpid()}")
+    #chrome_options.add_argument(f"--user-data-dir=/tmp/chrome_user_data_{os.getpid()}")
 
     service = Service(os.getenv("CHROMEDRIVER_PATH"))
     print("Initializing WebDriver...")
@@ -49,7 +49,6 @@ def get_screenshot():
             except Exception as e:
                 continue
             
-            #this is ran upon redirect back to login
             if 'notifications' in driver.current_url:
                 print("taking screenshot...")
                 driver.save_screenshot("screenshots/notifs_screenshot.png")

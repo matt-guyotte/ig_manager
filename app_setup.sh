@@ -149,7 +149,7 @@ sudo chown -R $UBUNTU_USER:www-data /home/$UBUNTU_USER/ig_manager
 sudo chmod -R 750 /home/$UBUNTU_USER/ig_manager
 
 # Path to systemd service file
-SERVICE_FILE="/etc/systemd/system/gunicorn.service"
+SERVICE_FILE="/etc/systemd/system/ig_manager.service"
 
 cat <<EOF | sudo tee $SERVICE_FILE > /dev/null
 [Unit]
@@ -158,16 +158,11 @@ After=network.target
 
 [Service]
 User=$UBUNTU_USER
-Group=www-data
+Group=$UBUNTU_USER
 WorkingDirectory=/home/$UBUNTU_USER/ig_manager
-ExecStart=/home/$UBUNTU_USER/ig_manager/venv/bin/gunicorn --workers 3 --bind unix:/tmp/ig_manager.sock --umask 007 main:app
+ExecStart=/home/$UBUNTU_USER/ig_manager/venv/bin/gunicorn --workers 3 --bind unix:/tmp/ig_manager.sock --timeout 120 main:app
 Restart=always
 KillMode=process
-TimeoutSec=30
-Environment="PATH=/home/$UBUNTU_USER/ig_manager/venv/bin"
-Environment="VIRTUAL_ENV=/home/$UBUNTU_USER/ig_manager/venv"
-Environment="CHROMEDRIVER_PATH=/usr/local/bin/chromedriver"
-Environment="CHROME_BINARY_PATH=/usr/bin/google-chrome"
 
 [Install]
 WantedBy=multi-user.target
@@ -182,8 +177,8 @@ sudo systemctl daemon-reload
 # Enable and start the service
 echo "Starting Gunicorn service..."
 sudo systemctl daemon-reload
-sudo systemctl enable gunicorn
-sudo systemctl start gunicorn
+sudo systemctl enable ig_manager
+sudo systemctl start ig_manager
 
 # set permissions for socket and var/run dir
 sudo chown $UBUNTU_USER:www-data /tmp/ig_manager.sock
