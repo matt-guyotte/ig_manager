@@ -160,7 +160,7 @@ After=network.target
 User=$UBUNTU_USER
 Group=www-data
 WorkingDirectory=/home/$UBUNTU_USER/ig_manager
-ExecStart=/home/$UBUNTU_USER/ig_manager/venv/bin/gunicorn --workers 3 --bind unix:/var/run/ig_manager.sock --umask 007 main:app
+ExecStart=/home/$UBUNTU_USER/ig_manager/venv/bin/gunicorn --workers 3 --bind unix:/tmp/ig_manager.sock --umask 007 main:app
 Restart=always
 KillMode=process
 TimeoutSec=30
@@ -186,10 +186,10 @@ sudo systemctl enable gunicorn
 sudo systemctl start gunicorn
 
 # set permissions for socket and var/run dir
-sudo chown $UBUNTU_USER:www-data /var/run/ig_manager.sock
-sudo chmod 770 /var/run/ig_manager.sock
-sudo chown $UBUNTU_USER:www-data /var/run
-sudo chmod 770 /var/run
+sudo chown $UBUNTU_USER:www-data /tmp/ig_manager.sock
+sudo chmod 770 /tmp/ig_manager.sock
+sudo chown $UBUNTU_USER:www-data /tmp
+sudo chmod 770 /tmp
 
 
 #install nginx if not already configured
@@ -202,7 +202,7 @@ server {
     server_name $APP_URL;
 
     location / {
-        proxy_pass http://unix:/var/run/ig_manager.sock;
+        proxy_pass http://unix:/tmp/ig_manager.sock;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
