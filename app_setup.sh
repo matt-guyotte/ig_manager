@@ -186,8 +186,7 @@ sudo chmod 770 /tmp/ig_manager.sock
 sudo chown $UBUNTU_USER:www-data /tmp
 sudo chmod 770 /tmp
 
-
-#install nginx if not already configured
+ #install nginx if not already configured
 sudo apt install -y nginx
 
 #configure nginx to add site     
@@ -214,17 +213,23 @@ sudo systemctl enable nginx
 
 echo "nginx file created and linked."
 
-#setup cron jobs
-CRON_JOB_1="*/30 * * * * curl http:/$APP_URL/main >> /home/$UBUNTU_USER/cron.log 2>&1"
-CRON_JOB_2="0 0 * * 0 curl http://$APP_URL/clear_deleted_notifs >> /home/$UBUNTU_USER/another-cron.log 2>&1"
+# Setup cron jobs
+# 1 - Runs main route every 10 minutes
+# 2 - Clears the deleted notifications table every Sunday
+CRON_JOBS="
+*/10 * * * * curl http://$APP_URL/main >> /home/$UBUNTU_USER/ig_manager/cron.log 2>&1
+0 0 * * 0 curl http://$APP_URL/clear_deleted_notifs >> /home/$UBUNTU_USER/ig_manager/cron.log 2>&1
+"
 
-# Check if the cron jobs already exist to avoid duplicates
-(crontab -l | grep -F "$CRON_JOB_1") || echo "$CRON_JOB_1" | crontab -
-(crontab -l | grep -F "$CRON_JOB_2") || echo "$CRON_JOB_2" | crontab -
+# Load current cron jobs, append new ones, and update the crontab
+( crontab -l 2>/dev/null; echo "$CRON_JOBS" ) | crontab -
 
 # Print out the current cron jobs to confirm
 echo "Current cron jobs:"
 crontab -l
+
+#make the cron commmands executable
+chmod +x /home/$UBUNTU_USER/ig_manager/cron.log
 
 echo "App setup complete. You will need to cd in and out of the directory to see
     the venv. Once back in use the "source venv/bin/activate" command to start the venv.
