@@ -38,10 +38,7 @@ def get_screenshot():
         )
 
         while True: 
-            time.sleep(1)  # Prevent CPU overuse
-
             if os.path.exists(cookie_file):
-                driver.delete_all_cookies()  # Clear old cookies
                 cookies = pickle.load(open(cookie_file, "rb"))
                 for cookie in cookies:
                     driver.add_cookie(cookie)
