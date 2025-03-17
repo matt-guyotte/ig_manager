@@ -160,12 +160,10 @@ After=network.target
 User=$UBUNTU_USER
 Group=$UBUNTU_USER
 WorkingDirectory=/home/$UBUNTU_USER/ig_manager
-ExecStart=/home/$UBUNTU_USER/ig_manager/venv/bin/gunicorn --workers 3 --bind unix:/tmp/ig_manager.sock --timeout 120 main:app
-KillMode=control-group
-KillSignal=SIGTERM
-ExecStop=/bin/kill -9 $MAINPID
+ExecStart=/home/$UBUNTU_USER/ig_manager/venv/bin/gunicorn --workers 3 --bind unix:/tmp/ig_manager.sock --timeout 120 main:app --access-logfile - --error-logfile -
+StandardOutput=journal
+StandardError=journal
 Restart=always
-TimeoutStopSec=10
 
 [Install]
 WantedBy=multi-user.target
