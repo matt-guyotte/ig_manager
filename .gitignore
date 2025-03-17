@@ -180,3 +180,6 @@ ig_manager.pem
 
 #screenshot files
 screenshots/*
+
+#noup file
+nohup.out
