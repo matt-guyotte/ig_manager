@@ -11,5 +11,5 @@ CREATE TABLE deleted_notifications (
     text VARCHAR(1000),
     type VARCHAR(10),
     names TEXT[],
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
