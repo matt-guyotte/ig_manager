@@ -1,6 +1,8 @@
 import os
 import pytesseract
+import cv2
 import sys
+import numpy as np
 import re  # Import regex for better filtering
 from collections import defaultdict
 from PIL import Image
@@ -25,7 +27,7 @@ UI_FILTER_WORDS = [
     "%", "@", "All Bookmarks", "Today", "New", "instagram.com/notifications", 
     "More", "Ce]", "oo AI Studio", "®", "Justagram", 
     "Justagram, (A Q ® explore", "© messages oo Al Studio", 
-    "This week", "This month", "Yesterday", "Follow", "Commented", "ay"
+    "This week", "This month", "Yesterday", "Follow", "Commented", "ay", "ek"
 ]
 
 # Function to check if text contains unwanted UI elements
@@ -39,15 +41,34 @@ def check_notifications():
     screenshot_url = get_screenshot()
 
     # Convert to PIL format
+    
+    # Open the screenshot
     screenshot = Image.open(screenshot_url)
 
     # Crop the image (adjust left, top, right, bottom as needed)
-    cropped_screenshot = screenshot.crop((900, 0, screenshot.width - 600, screenshot.height)) 
+    cropped_screenshot = screenshot.crop((900, 0, screenshot.width - 600, screenshot.height))
 
-    # Perform OCR with pytesseract
-    ocr_data = pytesseract.image_to_data(cropped_screenshot, output_type=pytesseract.Output.DICT)
+    # Convert to OpenCV format
+    opencv_image = np.array(cropped_screenshot)
 
-    # Save and process the cropped screenshot
+    # Convert to grayscale
+    gray = cv2.cvtColor(opencv_image, cv2.COLOR_RGB2GRAY)
+
+    # Apply thresholding (adaptive or Otsu’s)
+    _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+    # Resize for better accuracy (scale up)
+    scale_factor = 2
+    resized = cv2.resize(thresh, None, fx=scale_factor, fy=scale_factor, interpolation=cv2.INTER_CUBIC)
+
+    # Save the preprocessed image (for debugging)
+    cv2.imwrite('screenshots/preprocessed_screenshot.png', resized)
+
+    # Perform OCR with optimized parameters
+    custom_config = r'--oem 3 --psm 6'
+    ocr_data = pytesseract.image_to_data(resized, output_type=pytesseract.Output.DICT, config=custom_config)
+
+    # Save the cropped screenshot (for reference)
     cropped_screenshot.save('screenshots/final_screenshot.png')
 
     notifications = []

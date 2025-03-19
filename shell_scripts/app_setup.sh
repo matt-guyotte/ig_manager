@@ -93,7 +93,7 @@ sudo apt install -y libtesseract-dev
 python3 -m venv venv
 
 #Running virtual environment
-source venv/bin/activate
+source ../venv/bin/activate
 
 echo "Virtual environment now created. Now installing necessary dependencies."
 
@@ -203,7 +203,6 @@ server {
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto \$scheme;
     }
-
 }
 EOF
 

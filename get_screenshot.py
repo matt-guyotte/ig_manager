@@ -30,9 +30,7 @@ def get_screenshot():
     driver = webdriver.Chrome(service=service, options=chrome_options)
 
     driver.get("https://instagram.com/accounts/login")
-    WebDriverWait(driver, 20).until(
-        EC.presence_of_element_located((By.CSS_SELECTOR, "main[role='main']"))
-    )
+    time.sleep(8)
     while True: 
         if os.path.exists(cookie_file):
             cookies = pickle.load(open(cookie_file, "rb"))
@@ -47,14 +45,7 @@ def get_screenshot():
                 driver.save_screenshot("screenshots/notifs_screenshot.png")
                 break 
             except Exception as e:
-                continue
-            
-            if 'notifications' in driver.current_url:
-                print("taking screenshot...")
-                driver.save_screenshot("screenshots/notifs_screenshot.png")
-                break 
-            else:
-                os.remove(cookie_file)         
+                continue        
         else: 
             if "accounts/login" in driver.current_url:
                 username = driver.find_element(By.NAME, "username")
@@ -79,8 +70,12 @@ def get_screenshot():
                 except Exception as e:
                     driver.save_screenshot("screenshots/login_complete.png")
                     print(e)
-                pickle.dump(driver.get_cookies(), open(cookie_file, "wb"))
-                print("cookies saved.")
+                try:
+                    with open(cookie_file, "wb") as f:
+                        pickle.dump(driver.get_cookies(), f)
+                    print("Cookies saved successfully.")
+                except Exception as e:
+                    print(f"Error saving cookies: {e}")
 
     driver.quit()
     return "screenshots/notifs_screenshot.png"
