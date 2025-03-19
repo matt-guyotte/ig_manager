@@ -28,7 +28,7 @@
     <script>    
         // Function to delete notification //
         function delete_notif(event) { 
-            parentText = event.parentElement.childNodes[0].textContent.trim();
+            parentText = event.parentElement.querySelector('h2').textContent.trim();
             console.log(parentText)
             fetch("/delete_notif", {
                 method: 'POST', 
