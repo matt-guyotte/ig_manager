@@ -1,0 +1,70 @@
+body {
+    background-color: #eff2f7;
+    /*background: linear-gradient(rgba(172, 172, 172, 0.8), rgba(96, 80, 65, 0.873)), 
+                url("../images/site_background.jpg") center center; */ 
+    font-family: "Oswald";
+}
+.title-box {
+    display: flex;
+    flex-direction: column; /* Stack divs vertically */
+    align-items: center;
+    padding-left: 4%;
+}
+
+#title, .title {
+    text-align: center;
+    background-color: #C8E5F7;
+    display:grid;
+    width: 100%;
+    border: 2px solid gray;
+    border-radius: 3%;
+    background-color: #d6ecf9;
+    width: 60%;
+    box-shadow: 1px 1px gray;
+}
+
+
+ul {
+    display: flex;
+    flex-direction: column; /* Stack divs vertically */
+    align-items: center; /* Center divs horizontally */
+    font-family: 'Lato';
+    opacity: 80%;
+}
+
+li {
+    width: 60%;
+    display: grid;
+    grid-template-columns: 90% 10%;
+    grid-template-areas: none;
+    grid-template-areas: 
+      "notif button"
+      "link button";
+    background-color: #d6ecf9;
+    border-radius: 2%;
+    padding: 1%; 
+    list-style-type: none;
+    margin-bottom: 2%;
+    box-shadow: 5px 5px gray;
+}
+
+h2 {
+    grid-area: notif;
+    font-size: 24px;
+}
+
+.links {
+    grid-area: link;
+    font-size: 24px;
+    display: flex;
+}
+
+.link {
+    padding: 1%;
+    margin-right: 2%
+}
+
+input {
+    grid-area: button;
+    border-radius: 5%;
+}
