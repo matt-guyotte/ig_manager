@@ -231,6 +231,11 @@ crontab -l
 #make the cron commmands executable
 chmod +x /home/$UBUNTU_USER/ig_manager/cron.log
 
+#final clear to reset any processes
+sudo systemctl daemon-reload
+sudo systemctl restart ig_manager
+sudo systemctl restart nginx
+
 echo "App setup complete. You will need to cd in and out of the directory to see
     the venv. Once back in use the "source venv/bin/activate" command to start the venv.
     It's up to you if you would like to use a reverse proxy or call the flask app directly 
