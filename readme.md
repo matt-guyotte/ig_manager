@@ -7,6 +7,8 @@ It does this by taking screenshots of your notification page at regular interval
 
 Due to it's frequency, it allows you to see every individual user who interacts with your posts, allowing easier outreach.
 
+![ig_manager main page](static/images/ig_manager.png)
+
 # INSTALL INSTRUCTIONS:
 
 This is meant to be hosted on an ubuntu instance, with the user's choice of cloud or physical server. This will work the same on either. 

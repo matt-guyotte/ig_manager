@@ -161,9 +161,13 @@ User=$UBUNTU_USER
 Group=$UBUNTU_USER
 WorkingDirectory=/home/$UBUNTU_USER/ig_manager
 ExecStart=/home/$UBUNTU_USER/ig_manager/venv/bin/gunicorn --workers 3 --bind unix:/tmp/ig_manager.sock --timeout 120 main:app --access-logfile - --error-logfile -
+ExecStopPost=/bin/sh -c "sudo pkill -9 chrome; sudo pkill -9 chromedriver"
 StandardOutput=journal
 StandardError=journal
 Restart=always
+RestartSec=10
+TimeoutStopSec=80
+KillMode=control-group
 
 [Install]
 WantedBy=multi-user.target
