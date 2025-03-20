@@ -11,9 +11,9 @@ read -sp "Enter your instagram password (this will only be stored locally, and n
 echo
 echo "Instagram credentials added to .env."
 
-read -p "Enter your database username: " DB_USER
+read -p "Create your database username (save if needed): " DB_USER
 echo
-read -sp "Enter your database password: " DB_PASS
+read -sp "Create your database password (save if needed): " DB_PASS
 echo
 read -p "Enter your ubuntu username (might just be unbuntu): " UBUNTU_USER
 echo
@@ -23,7 +23,7 @@ echo "This database will be named 'insta_notifications'.
     log in to the psql server."
 
 
-cat <<EOF > .env
+cat <<EOF > ../.env
 DB_USER="$DB_USER"
 DB_PASS="$DB_PASS"
 DB_NAME="insta_notifications"
@@ -37,7 +37,7 @@ PYTESSERACT_PATH = "/usr/bin/tesseract"
 EOF
 
 #Setting read and write permission to owner only
-chmod 600 .env
+chmod 600 ../.env
 
 echo ".env file created with db and insta credentials."
 
@@ -90,15 +90,15 @@ sudo apt install -y tesseract-ocr
 sudo apt install -y libtesseract-dev
 
 #Creating virtual environment 
-python3 -m venv venv
+python3 -m venv ../venv
 
 #Running virtual environment
-source ../venv/bin/activate
+source /home/$UBUNTU_USER/ig_manager/venv/bin/activate
 
 echo "Virtual environment now created. Now installing necessary dependencies."
 
 #Installing python dependencies
-pip install -r requirements.txt
+pip install -r ../requirements.txt
 
 #install wget and unzip if not available
 sudo apt install -y wget
