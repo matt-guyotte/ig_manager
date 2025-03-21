@@ -29,13 +29,43 @@ def get_screenshot():
     print("Initializing WebDriver...")
     driver = webdriver.Chrome(service=service, options=chrome_options)
 
-    driver.get("https://instagram.com/accounts/login")
-    time.sleep(8)
-    while True: 
+    try:
+        driver.get("https://instagram.com/accounts/login")
+        time.sleep(8)
         if os.path.exists(cookie_file):
             cookies = pickle.load(open(cookie_file, "rb"))
             for cookie in cookies:
-                driver.add_cookie(cookie)
+                driver.add_cookie(cookie)   
+
+        if "accounts/login" in driver.current_url:
+            username = driver.find_element(By.NAME, "username")
+            password = driver.find_element(By.NAME, "password")
+            username.send_keys(os.getenv("INSTA_USER"))
+            password.send_keys(os.getenv("INSTA_PASS"))
+            driver.save_screenshot("screenshots/info_entered.png")
+            login_button = driver.find_element(By.XPATH, "//button[@type='submit']")
+            login_button.click()
+            driver.save_screenshot("screenshots/button_clicked.png")
+            #If instagram asks to save login information
+            try:
+                save_button = WebDriverWait(driver, 15).until(
+                    EC.presence_of_element_located((By.XPATH, "//button[contains(text(), 'Save')]"))
+                )
+                driver.save_screenshot("screenshots/login_complete.png")
+                save_button = driver.find_element(By.XPATH, "//button[contains(text(), \"Save\")]")
+                save_button.click()
+                time.sleep(8)
+                driver.save_screenshot("screenshots/login_info_saved.png")
+            except Exception as e:
+                driver.save_screenshot("screenshots/login_complete.png")
+                print(e)
+            try:
+                with open(cookie_file, "wb") as f:
+                    pickle.dump(driver.get_cookies(), f)
+                print("Cookies saved successfully.")
+            except Exception as e:
+                print(f"Error saving cookies: {e}")
+        if driver.current_url == "https:www.instagram.com" or "notifications" in driver.current_url:
             try:
                 driver.get("https://instagram.com/notifications")
                 WebDriverWait(driver, 20).until(
@@ -43,42 +73,14 @@ def get_screenshot():
                 )
                 print("taking screenshot...")
                 driver.save_screenshot("screenshots/notifs_screenshot.png")
-                break 
             except Exception as e:
-                continue        
-        else: 
-            if "accounts/login" in driver.current_url:
-                username = driver.find_element(By.NAME, "username")
-                password = driver.find_element(By.NAME, "password")
-                username.send_keys(os.getenv("INSTA_USER"))
-                password.send_keys(os.getenv("INSTA_PASS"))
-                driver.save_screenshot("screenshots/info_entered.png")
+                print(f"error found on notification page: {e}")
+    except Exception as e:
+        print (f"Error in get_screenshot(): {e}")            
 
-                login_button = driver.find_element(By.XPATH, "//button[@type='submit']")
-                login_button.click()
-                driver.save_screenshot("screenshots/button_clicked.png")
-                #If instagram asks to save login information
-                try:
-                    save_button = WebDriverWait(driver, 15).until(
-                        EC.presence_of_element_located((By.XPATH, "//button[contains(text(), 'Save')]"))
-                    )
-                    driver.save_screenshot("screenshots/login_complete.png")
-                    save_button = driver.find_element(By.XPATH, "//button[contains(text(), \"Save\")]")
-                    save_button.click()
-                    time.sleep(8)
-                    driver.save_screenshot("screenshots/login_info_saved.png")
-                except Exception as e:
-                    driver.save_screenshot("screenshots/login_complete.png")
-                    print(e)
-                try:
-                    with open(cookie_file, "wb") as f:
-                        pickle.dump(driver.get_cookies(), f)
-                    print("Cookies saved successfully.")
-                except Exception as e:
-                    print(f"Error saving cookies: {e}")
-
-    driver.quit()
-    return "screenshots/notifs_screenshot.png"
+    finally:
+        driver.quit()
+        return "screenshots/notifs_screenshot.png"
 
 if __name__ == "__main__":
     get_screenshot()
