@@ -36,9 +36,11 @@ def contains_ui_words(text):
     return any(re.search(rf'\b{re.escape(word)}\b', text, re.IGNORECASE) for word in UI_FILTER_WORDS)
 
 def check_notifications():
+    print("ran check notifications")
     """Automates checking Instagram notifications, extracts text, and detects thumbnails."""
     
     screenshot_url = get_screenshot()
+    print("screenshot url: ", screenshot_url)
 
     # Convert to PIL format
     
