@@ -77,13 +77,11 @@ def get_screenshot():
                 print("Cookies saved successfully.")
             except Exception as e:
                 print(f"Error saving cookies: {e}")
-        if driver.current_url == "https://www.instagram.com" or "notifications" in driver.current_url:
+            driver.get("https://instagram.com/notifications")
+            time.sleep(8)    
+        if "notifications" in driver.current_url:
             try:
                 print("on notifs page")
-                driver.get("https://instagram.com/notifications")
-                WebDriverWait(driver, 20).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, "div[role='heading']"))
-                )
                 print("taking screenshot...")
                 driver.save_screenshot("screenshots/notifs_screenshot.png")
             except Exception as e:
