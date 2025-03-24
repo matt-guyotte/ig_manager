@@ -35,10 +35,18 @@ def get_screenshot():
         driver.save_screenshot("screenshots/first_screenshot.png")
         if os.path.exists(cookie_file):
             cookies = pickle.load(open(cookie_file, "rb"))
+
             for cookie in cookies:
                 driver.add_cookie(cookie) 
             driver.get("https://instagram.com/notifications")
             time.sleep(8)
+            # Updating cookies to prevent timeout #
+            try:
+                with open(cookie_file, "wb") as f:
+                    pickle.dump(driver.get_cookies(), f)
+                print("Cookies updated successfully.")
+            except Exception as e:
+                print(f"Error saving cookies: {e}")
 
         if "accounts/login" in driver.current_url:
             print("is login")
