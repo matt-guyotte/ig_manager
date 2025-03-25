@@ -221,7 +221,7 @@ echo "nginx file created and linked."
 # 1 - Runs main route every 10 minutes
 # 2 - Clears the deleted notifications table every Sunday
 CRON_JOBS="
-*/10 * * * * curl http://$APP_URL/main >> /home/$UBUNTU_USER/ig_manager/cron.log 2>&1
+*/20 * * * * bin/bash -c 'sleep $((RANDOM % 1200)) && curl http://$APP_URL/main >> /home/$UBUNTU_USER/ig_manager/cron.log 2>&1'
 0 0 * * 0 curl http://$APP_URL/clear_deleted_notifs >> /home/$UBUNTU_USER/ig_manager/cron.log 2>&1
 "
 
