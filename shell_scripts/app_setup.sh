@@ -220,8 +220,18 @@ echo "nginx file created and linked."
 # Setup cron jobs
 # 1 - Runs main route every 10 minutes
 # 2 - Clears the deleted notifications table every Sunday
+
+# Setup cron shell to be executed
+cat << EOF | sudo tee /home/$UBUNTU_USER/ig_manager/shell_scripts/cron_command.sh > dev/null
+    sleep \$((RANDOM % 1080))
+    curl -k http://$APP_URL/main >> /home/$UBUNTU_USER/ig_manager/cron.log 2>&1
+EOF
+
+# Ensure the script is executable
+sudo chmod +x /home/$UBUNTU_USER/ig_manager/shell_scripts/cron_command.sh
+
 CRON_JOBS="
-*/20 * * * * bin/bash -c 'sleep $((RANDOM % 1080)) && curl http://$APP_URL/main >> /home/$UBUNTU_USER/ig_manager/cron.log 2>&1'
+*/20 * * * * /home/$UBUNTU_USER/ig_manager/shell_scripts/cron_command.sh
 0 0 * * 0 curl http://$APP_URL/clear_deleted_notifs >> /home/$UBUNTU_USER/ig_manager/cron.log 2>&1
 "
 
