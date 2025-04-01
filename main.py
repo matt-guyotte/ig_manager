@@ -24,7 +24,7 @@ def delete_notification():
     return "0"
 
 @app.route("/clear_deleted_notifs")
-def clear_deleted_notifs():
+def clear_deleted_notifs_route():
     connection = db_config()
     clear_deleted_notifs(connection)
     return "0"

@@ -10,4 +10,5 @@ def clear_deleted_notifs(connection):
         connection.rollback()
         print("Exception found: ", e)
     finally:
+        print("notifs deleted.")
         cursor.close()
